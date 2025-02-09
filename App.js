@@ -7,6 +7,7 @@ import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
 import { createStackNavigator } from "@react-navigation/stack";
 import HomePage from "./src/pages/Home";
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import {
   NavigationContainer,
   createStaticNavigation,
@@ -37,6 +38,7 @@ export default function App() {
   }
 
   return (
+    <GestureHandlerRootView>
     <Provider store={store}>
       <SafeAreaView style={styles.container}>
         <NavigationContainer>
@@ -55,13 +57,14 @@ export default function App() {
         </NavigationContainer>
       </SafeAreaView>
     </Provider>
+    </GestureHandlerRootView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingTop: StatusBar.currentHeight,
+   
     backgroundColor: "#FFFFFF",
     position: "relative",
   },

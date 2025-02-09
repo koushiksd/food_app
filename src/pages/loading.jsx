@@ -12,8 +12,8 @@ import Animated, {
 import { CustomeText, CustomeTextAnimated } from "../Components/Text";
 import { useNavigation } from "@react-navigation/native";
 const layOutCnahe = LinearTransition.springify().damping(400).stiffness(100);
-const FadeOutUp_ = FadeOutUp.springify().damping(100).stiffness(100)
-const FadeIn_ = FadeInUp.springify().damping(100).stiffness(100)
+const FadeOutUp_ = FadeOutUp.springify().damping(100).stiffness(100);
+const FadeIn_ = FadeInUp.springify().damping(100).stiffness(100);
 const LoadingScreen = (CustomeTextAnimated) => {
   let nav = useNavigation();
   let dispatch = useDispatch();
@@ -27,14 +27,13 @@ const LoadingScreen = (CustomeTextAnimated) => {
   const getCatagory = () => {
     apicall("list.php?c=list")
       .then((res) => {
-        console.log(res.data.meals);
-        let arr = ["All"]
-        for(let i=0;i<res.data.meals.length;i++){
-            arr.push(res.data.meals[i].strCategory)
+        let arr = ["All"];
+        for (let i = 0; i < res.data.meals.length; i++) {
+          arr.push(res.data.meals[i].strCategory);
         }
 
         dispatch(setCategory(arr));
-        console.log({ loading }, 21);
+
         setLoading(2);
       })
       .catch((err) => {
@@ -44,7 +43,6 @@ const LoadingScreen = (CustomeTextAnimated) => {
   const getAllFoods = () => {
     apicall("search.php?s")
       .then((res) => {
-        console.log(res.data.meals.length);
         setLoading(1);
         dispatch(setFood(res.data.meals));
 
@@ -53,7 +51,7 @@ const LoadingScreen = (CustomeTextAnimated) => {
         }, 2000);
       })
       .catch((err) => {
-        console.log({err});
+        console.log({ err });
       });
   };
   useEffect(() => {

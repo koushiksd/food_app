@@ -15,7 +15,7 @@ const FadeOutUp_ = FadeOutUp.springify()
   .stiffness(100);
 const FadeIn_ = FadeInUp.springify().duration(12).damping(100).stiffness(100);
 const ProductCard = ({ item }) => {
-
+console.log({ir:item.strCategory})
   return (
     <Animated.View
       layout={layOutCnahe}
@@ -41,7 +41,7 @@ const ProductCard = ({ item }) => {
           <Text style={style.title}>{item.strCategory}</Text>
         )}
       </View>
-      {item.locationTitle && (
+      {item.strArea && (
         <View style={style.location}>
           <Text style={style.locationTitle}>from {item.strArea}</Text>
         </View>
