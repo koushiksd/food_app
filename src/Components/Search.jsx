@@ -7,34 +7,64 @@ import {
   TextInput,
   View,
 } from "react-native";
-// import Voice from "@react-native-voice/voice";
+import {
+  ExpoSpeechRecognitionModule,
+  useSpeechRecognitionEvent,
+} from "expo-speech-recognition";
+import { useNavigation } from "@react-navigation/native";
+import { useDispatch, useSelector } from "react-redux";
+import { searchString, setSearch } from "../Store/food";
+import Entypo from "@expo/vector-icons/Entypo";
 const Search = () => {
+  let serchText = useSelector(searchString);
+  let dispatch = useDispatch();
+  let nav = useNavigation();
   let [text, settext] = useState();
   const [isRecording, setIsRecording] = useState(false);
-  const [userMessage, setUserMessage] = useState("");
-  const [err, seterr] = useState("");
-//   Voice.onSpeechStart = () => setIsRecording(true);
-//   Voice.onSpeechEnd = () => setIsRecording(false);
-//   Voice.onSpeechError = (e) => seterr(e);
-//   Voice.onSpeechResults = (e) => settext(e.value[0]);
+
+  useSpeechRecognitionEvent("start", () => setIsRecording(true));
+  useSpeechRecognitionEvent("end", () => setIsRecording(false));
+  useSpeechRecognitionEvent("result", (event) => {
+    settext(event.results[0]?.transcript);
+    dispatch(setSearch(event.results[0]?.transcript));
+    nav.navigate("products", { search: text });
+  });
+  useSpeechRecognitionEvent("error", (event) => {
+    console.log("error code:", event.error, "error message:", event.message);
+  });
+
   useEffect(() => {
-    console.log({ err });
-  }, [err]);
-  const stateRec = async () => {
-    console.log("Reco");
-    try {
-      //await Voice.start("en-US");
-    } catch (err) {
-      seterr(err);
+    settext(serchText);
+    // console.log()
+  }, [serchText]);
+  const onSubmit = () => {
+    let router = nav.getState().routes;
+    if (router[router.length - 1].name == "home" && text == "") {
+    } else {
+      dispatch(setSearch(text));
+      nav.navigate("products", { search: text });
     }
   };
 
-  const stopRec = async () => {
-    try {
-    // await Voice.stop();
-    } catch (err) {
-      seterr(err);
+  const handleStart = async () => {
+    ExpoSpeechRecognitionModule.getPermissionsAsync().then((result) => {
+      console.log("Status:", result.status);
+      console.log("Granted:", result.granted);
+      console.log("Can ask again:", result.canAskAgain);
+      console.log("Expires:", result.expires);
+    });
+
+    const result = await ExpoSpeechRecognitionModule.requestPermissionsAsync();
+    if (!result.granted) {
+      console.warn("Permissions not granted", result);
+      return;
     }
+    console.log(result)
+    // // Start speech recognition
+    ExpoSpeechRecognitionModule.start({
+      lang: "en-US",
+   
+    });
   };
   return (
     <View style={style.mainContainer}>
@@ -48,20 +78,24 @@ const Search = () => {
           style={style.input}
           onChangeText={settext}
           value={text}
-          onSubmitEditing={()=>{console.log("done")}}
+          onSubmitEditing={onSubmit}
         />
       </View>
       <View>
         <Pressable
           onPress={() => {
-            isRecording ? stopRec() : stateRec();
+            isRecording ? ExpoSpeechRecognitionModule.stop() : handleStart();
           }}
         >
           <View style={style.micContainer}>
-            <Image
-              style={style.micImage}
-              source={require("../assets/icons/mic.png")}
-            />
+            {!isRecording ? (
+              <Image
+                style={style.micImage}
+                source={require("../assets/icons/mic.png")}
+              />
+            ) : (
+              <Entypo name="dots-three-horizontal" size={20} color="white" />
+            )}
           </View>
         </Pressable>
       </View>

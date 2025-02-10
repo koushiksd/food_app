@@ -21,7 +21,7 @@ const Category = () => {
     dispath(setLoading(true))
     dispath(setSeletedCategory(value));
     let search = value == "All" ? "search.php?s" :"filter.php?c=" + value;
-    console.log(search);
+//    console.log(search);
 
     apicall( search)
       .then((res) => {
@@ -70,11 +70,13 @@ const Category = () => {
                   style={{
                     color: seletedCategory == item.item ? "#FFFFFF" : "#71B1A1",
                     fontFamily: "Poppins-Regular",
+                    fontSize:12,
+                    fontWeight:600
                   }}
                 >
                   {item.item}{" "}
                 </Animated.Text>
-                {loading &&  seletedCategory == item.item &&  <ActivityIndicator />}
+             
               </Animated.View>
             </Pressable>
           );

@@ -1,13 +1,21 @@
-import { Dimensions, Image, StyleSheet, Text, View } from "react-native";
-const width_ = (Dimensions.get("screen").width - 100) / 2;
-import FontAwesome from '@expo/vector-icons/FontAwesome';
+import {
+  Dimensions,
+  Image,
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
+
+import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { LinearGradient } from "expo-linear-gradient";
 import Animated, {
   FadeInUp,
   FadeOutUp,
   LinearTransition,
 } from "react-native-reanimated";
-
+import { useNavigation } from "@react-navigation/native";
+const width_ =( Dimensions.get("screen").width/2)-50
 const layOutCnahe = LinearTransition.springify().damping(400).stiffness(100);
 const FadeOutUp_ = FadeOutUp.springify()
   .duration(12)
@@ -15,55 +23,65 @@ const FadeOutUp_ = FadeOutUp.springify()
   .stiffness(100);
 const FadeIn_ = FadeInUp.springify().duration(12).damping(100).stiffness(100);
 const ProductCard = ({ item }) => {
-console.log({ir:item.strCategory})
+  const nav = useNavigation()
+
   return (
-    <Animated.View
-      layout={layOutCnahe}
-      entering={FadeIn_}
-      exiting={FadeOutUp_}
-      style={style.cardMainContainer}
-    >
-      <View style={style.rating}>
-      <FontAwesome name="star" size={10} color={item.rating<3?"red":"gold"} />  
-         <Text style={style.ratingText}>{item.rating}</Text>
-      </View>
-      <View>
-        <Image source={{ uri: item.strMealThumb }} style={style.image} />
-      </View>
-      <LinearGradient
-        // Button Linear Gradient
-        colors={["rgba(169, 168, 168, 0)", "rgb(52, 52, 52)"]}
-        style={style.shade}
-      />
-      <View style={style.textContainer}>
-        <Text style={style.title}>{item.strMeal}</Text>
-        {item.strCategory && (
-          <Text style={style.title}>{item.strCategory}</Text>
-        )}
-      </View>
-      {item.strArea && (
-        <View style={style.location}>
-          <Text style={style.locationTitle}>from {item.strArea}</Text>
+    <Pressable onPress={()=>{
+      console.log(item.idMeal)
+      nav.navigate("productsdetails",{"idMeal":item.idMeal})
+      
+    }}> 
+      <Animated.View
+        layout={layOutCnahe}
+        entering={FadeIn_}
+        exiting={FadeOutUp_}
+        style={style.cardMainContainer}
+      >
+        <View style={style.rating}>
+          <FontAwesome
+            name="star"
+            size={10}
+            color={item.rating < 3 ? "red" : "gold"}
+          />
+          <Text style={style.ratingText}>{item.rating}</Text>
         </View>
-      )}
-    </Animated.View>
+        <View>
+          <Image source={{ uri: item.strMealThumb }} style={style.image} />
+        </View>
+        <LinearGradient
+          // Button Linear Gradient
+          colors={["rgba(55, 55, 55, 0.18)","rgba(0, 0, 0, 0.32)", "rgb(2, 2, 2)"]}
+          style={style.shade}
+        />
+        <View style={style.textContainer}>
+          <Text style={style.title}>{item.strMeal}</Text>
+          {item.strCategory && (
+            <Text style={style.title}>{item.strCategory}</Text>
+          )}
+        </View>
+        {item.strArea && (
+          <View style={style.location}>
+            <Text style={style.locationTitle}>from {item.strArea}</Text>
+          </View>
+        )}
+      </Animated.View>
+    </Pressable>
   );
 };
 const style = StyleSheet.create({
-    rating:{
-        position:'absolute',
-        top:10,
-        right:10,
-        zIndex:10,
-        flexDirection:'row',
-        alignItems:'center',
-        justifyContent:'center',
-        backgroundColor:'#FFE1B3',
-        paddingVertical:3,
-        paddingHorizontal:5,
-        borderRadius:10
-
-    },
+  rating: {
+    position: "absolute",
+    top: 10,
+    right: 10,
+    zIndex: 10,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "#FFE1B3",
+    paddingVertical: 3,
+    paddingHorizontal: 5,
+    borderRadius: 10,
+  },
   textContainer: {
     position: "absolute",
     bottom: 25,
@@ -85,9 +103,10 @@ const style = StyleSheet.create({
   cardMainContainer: {
     height: 150,
 
-    width: 150,
+    width: width_,
     borderRadius: 10,
-    marginVertical: 10,
+    margin: 8,
+  
     position: "relative",
     overflow: "hidden",
   },
@@ -95,7 +114,7 @@ const style = StyleSheet.create({
     marginRight: 5,
     fontFamily: "Poppins-Regular",
     fontSize: 11,
-    marginLeft:5,
+    marginLeft: 5,
     color: "black",
   },
   title: {
@@ -116,11 +135,11 @@ const style = StyleSheet.create({
     top: 0,
     left: 0,
     height: 150,
-    width: 150,
+    width: width_,
   },
   shade: {
     height: 150,
-    width: 150,
+    width: width_,
     position: "absolute",
     top: 0,
     left: 0,

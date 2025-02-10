@@ -1,27 +1,28 @@
 import { Text, View, FlatList, StyleSheet, Dimensions } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
-import { foodList, isLoading } from "../Store/food";
+import {
+  foodList,
+  isLoading,
+  searchString,
+  setFood,
+  setLoading,
+  setResult,
+  setResultLoading,
+} from "../Store/food";
 
 import ProductCard from "../Components/ProductCard";
 import { useEffect, useState } from "react";
 import Animated, { FadeInUp } from "react-native-reanimated";
+import { apicall } from "../helpers/axios";
+import LoadingText from "../Components/Loading";
 const FadeIn_ = FadeInUp.springify().damping(0).stiffness(100);
-const Products = () => {
+const Products = ({ products, loading }) => {
   let dispatch = useDispatch();
-  let texts = [
-    "Applesauce was the first food eaten in space.",
-    " Broccoli contains more protein (per calorie) than steak!",
-    "Raspberries are a member of the rose family.",
-    "Potatoes were the first food planted in space.",
-    "Cucumbers are 95% water.",
-    "Figs aren’t fruits, they are flowers.",
-  ];
-  let loading = useSelector(isLoading);
-  let [cheight, setcheight] = useState(300);
-  let products = useSelector(foodList);
+  let search = useSelector(searchString);
+
   const style = StyleSheet.create({
     productMain: {
-      height: cheight,
+      flex: 1,
     },
     factsContainer: {
       flex: 1,
@@ -34,34 +35,31 @@ const Products = () => {
       textAlign: "center",
     },
   });
+  let fetchProduts = (search) => {
+    dispatch(setResultLoading(true));
+
+    let searchString_ = search == "" ? "" : "=" + search;
+    apicall("search.php?s" + searchString_)
+      .then((res) => {
+        dispatch(setResult(res.data.meals == null ? [] : res.data.meals));
+
+        setTimeout(() => {
+          dispatch(setResultLoading(false));
+        }, 500);
+      })
+      .catch((err) => {
+        dispatch(setResultLoading(false));
+        console.log({ err });
+      });
+  };
   useEffect(() => {
-    console.log({ products });
-  }, [products]);
+    //console.log({ search },57);
+    fetchProduts(search);
+  }, [search]);
   return (
-    <View
-      style={style.productMain}
-      onLayout={(e) => {
-        e.target.measure((x, y, width, height, pagex, pagey) => {
-          console.log({
-            x,
-            y,
-            pagey,
-            Dimensions: Dimensions.get("screen").height,
-          });
-          setcheight(
-            Dimensions.get("screen").height - pagey < 200
-              ? 200
-              : Dimensions.get("screen").height - pagey - 50
-          );
-        });
-      }}
-    >
+    <View style={style.productMain}>
       {loading ? (
-        <Animated.View style={style.factsContainer} entering={FadeIn_}>
-          <Animated.Text entering={FadeIn_} style={style.facts}>
-            {texts[Math.floor(Math.random() * 5)]}
-          </Animated.Text>
-        </Animated.View>
+        <LoadingText />
       ) : products.length > 0 ? (
         <Animated.View
           style={style.factsContainer}
@@ -74,27 +72,23 @@ const Products = () => {
             exiting={FadeIn_}
             showsVerticalScrollIndicator={false}
             contentContainerStyle={{
-              justifyContent: "space-around",
+              justifyContent: "flex-between",
               flexDirection: "row",
               flexWrap: "wrap",
+            
             }}
             keyExtractor={(item) => item.idMeal}
             renderItem={(item, index) => {
-              return (
-                <ProductCard
-                  item={item.item}
-                 
-                />
-              );
+              return <ProductCard item={item.item} />;
             }}
           />
         </Animated.View>
       ) : (
         <Animated.View style={style.factsContainer} entering={FadeIn_}>
-        <Animated.Text entering={FadeIn_} style={style.facts}>
-          No Products Found, Sorry!
-        </Animated.Text>
-      </Animated.View>
+          <Animated.Text entering={FadeIn_} style={style.facts}>
+            No Products Found, Sorry!
+          </Animated.Text>
+        </Animated.View>
       )}
     </View>
   );
