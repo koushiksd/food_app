@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { StyleSheet } from "react-native";
-import Animated from "react-native-reanimated";
+import Animated, { FadeOutUp } from "react-native-reanimated";
 import { FadeInUp } from "react-native-reanimated/src";
 
 const texts = [
@@ -16,6 +16,7 @@ const texts = [
   "Pilgrims are responsible for apples in America","Bubble tea is around 40 years old.",
   "Most grapes end up as wine."
 ];
+const FadeOutUp_ = FadeOutUp.springify().damping(100).stiffness(100);
 const FadeIn_ = FadeInUp.springify().damping(0).stiffness(100);
 const LoadingText = () => {
   let [dispText, setDispText] = useState("");
@@ -23,7 +24,7 @@ const LoadingText = () => {
     setDispText(texts[Math.floor(Math.random() * texts.length)]);
   }, []);
   return (
-    <Animated.View style={style.factsContainer} entering={FadeIn_}>
+    <Animated.View style={style.factsContainer}exiting={FadeOutUp_} entering={FadeIn_}>
       <Animated.Text entering={FadeIn_} style={style.facts}>
         {dispText}
       </Animated.Text>
