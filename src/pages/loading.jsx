@@ -28,7 +28,10 @@ const LoadingScreen = (CustomeTextAnimated) => {
   let [status, setstatus] = useState("We are getting details");
   const NextScreen = () => {
     //  console.log("Next Screen");
-    nav.navigate("home");
+    nav.reset({
+          index: 0,
+          routes: [{ name: "home" }],
+        });
   };
   const getCatagory = () => {
     apicall("list.php?c=list")

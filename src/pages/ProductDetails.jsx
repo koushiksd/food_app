@@ -15,6 +15,10 @@ import { FlatList, ScrollView } from "react-native-gesture-handler";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { useNavigation } from "@react-navigation/native";
 import Entypo from "@expo/vector-icons/Entypo";
+import Animated, { FadeIn, FadeInUp } from "react-native-reanimated";
+import Collapsible from "../Components/Collapsable.jsx";
+const FadeIn_ = FadeIn.springify().delay(600).stiffness(10);
+const FadeOutUp_ = FadeInUp.springify().delay(600).damping(100).stiffness(100);
 
 const ProductDetails = ({ navigation, route }) => {
   let [item, setitem] = useState(null);
@@ -35,7 +39,7 @@ const ProductDetails = ({ navigation, route }) => {
           data[str] != "" && ing.push(`${data[str]} - ${data[str1]}`);
         }
         setingredient(ing);
- 
+
         setTimeout(() => {
           setloading(false);
         }, 1000);
@@ -49,16 +53,12 @@ const ProductDetails = ({ navigation, route }) => {
     fetchProducts();
   }, []);
   return (
-    <View style={style.mainContainer}>
+    <Animated.View entering={FadeOutUp_} style={style.mainContainer}>
       {loading ? (
         <LoadingText />
       ) : (
-        <View
-       
-          style={{ padding: 10, flex: 1 }}
-        >
-          <View
-       style={style.header}>
+        <Animated.View entering={FadeIn_} style={{ padding: 10, flex: 1 }}>
+          <View style={style.header}>
             <Pressable
               onPress={() => {
                 nav.goBack();
@@ -92,7 +92,7 @@ const ProductDetails = ({ navigation, route }) => {
           >
             {item.strMeal} - {item.strCategory}
           </CustomeText>
-          <CustomeText style={{ fontSize: 12, marginTop: -5, marginBottom: 5 }}>
+          <CustomeText style={{ fontSize: 12, marginTop: 2, marginBottom: 5 }}>
             from {item.strArea}
           </CustomeText>
           <View style={style.imageContainer}>
@@ -100,45 +100,60 @@ const ProductDetails = ({ navigation, route }) => {
           </View>
 
           <View style={{ flex: 1 }}>
-            <ScrollView bounces={false} contentContainerStyle={{ flexGrow: 1 }}>
+            <ScrollView
+              showsVerticalScrollIndicator={false}
+              bounces={false}
+              contentContainerStyle={{ flexGrow: 1 }}
+            >
+              <CustomeText style={{ fontSize: 12, margin: 8 }}>
+                Lorem Ipsum is simply dummy text of the printing and typesetting
+                industry. Lorem Ipsum has been the industry's standard dummy
+                text ever.
+              </CustomeText>
               <View style={{ flex: 1 }}>
-                <CustomeText
-                  style={{ fontFamily: "Poppins-SemiBold", fontSize: 14 }}
+                <Collapsible
+                  setheight={200}
+                  pstyle={{
+                    borderBottomLeftRadius: 0,
+                    borderBottomRightRadius: 0,
+                    paddingBottom: 30,
+                  }}
+                  bgColor={"#E5E8E0"}
+                  title={"Ingredients"}
                 >
-                  Required Ingredients
-                </CustomeText>
-                <View style={{ padding: 10 }}>
                   <FlatList
                     data={ingredient}
                     scrollEnabled={false}
                     keyExtractor={(item, index) => index}
                     renderItem={({ item, index }) => {
                       return (
-                        <CustomeText style={{ fontSize: 12 }}>
+                        <CustomeText style={{ fontSize: 12, marginTop: 8 }}>
                           {index + 1}. {item}
                         </CustomeText>
                       );
                     }}
                   />
-                </View>
-
-                <CustomeText
-                  style={{ fontFamily: "Poppins-SemiBold", fontSize: 14 }}
+                </Collapsible>
+                <Collapsible
+                  pstyle={{ marginTop: -10, paddingBottom: 10 }}
+                  setheight={200}
+                  bgColor={"#71B1A1"}
+                  title={"Direction"}
                 >
-                  Instructions
-                </CustomeText>
-                <CustomeText style={{ fontSize: 12, padding: 10 }}>
-                  {item.strInstructions}
-                </CustomeText>
+                  <CustomeText style={{ fontSize: 12, padding: 10 }}>
+                    {item.strInstructions}
+                  </CustomeText>
+                </Collapsible>
               </View>
             </ScrollView>
           </View>
-        </View>
+        </Animated.View>
       )}
-    </View>
+    </Animated.View>
   );
 };
 const style = StyleSheet.create({
+  ingredients: {},
   mainContainer: {
     flex: 1,
     backgroundColor: "white",

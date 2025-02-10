@@ -1,7 +1,5 @@
 import { Image, StyleSheet, Text, View } from "react-native";
 import Animated, {
-  FadeIn,
-  FadeInDown,
   FadeInUp,
   FadeOutUp,
   SharedTransition,
@@ -10,8 +8,9 @@ import Animated, {
 import Search from "../Components/Search";
 import Category from "../Container/Category";
 import Products from "../Container/Products";
-import { useSelector } from "react-redux";
+import {  useSelector } from "react-redux";
 import { foodList, isLoading } from "../Store/food";
+
 const customTransition = SharedTransition.custom((values) => {
   "worklet";
   return {
@@ -22,7 +21,6 @@ const customTransition = SharedTransition.custom((values) => {
   };
 });
 const ProfileHeader = () => {
- 
   return (
     <View style={style.headerContianer}>
       <View>
@@ -49,9 +47,11 @@ const ProfileHeader = () => {
   );
 };
 
-const HomePage = () => {
-  let products = useSelector(foodList)
-  let loading = useSelector(isLoading)
+const HomePage = ({ route }) => {
+
+  let products = useSelector(foodList);
+  let loading = useSelector(isLoading);
+
   return (
     <Animated.View
       entering={FadeInUp.springify().delay(500).damping(100).stiffness(100)}
@@ -72,7 +72,7 @@ const HomePage = () => {
       <View style={{ height: 10 }} />
       <Category />
       <View style={{ height: 10 }} />
-      <Products products={products} loading={loading}/>
+      <Products products={products} loading={loading} />
     </Animated.View>
   );
 };
@@ -82,8 +82,7 @@ const style = new StyleSheet.create({
     padding: 10,
     paddingVertical: 20,
     paddingHorizontal: 30,
-    backgroundColor:'#ffffff'
-    
+    backgroundColor: "#ffffff",
   },
   headerContianer: {
     flexDirection: "row",

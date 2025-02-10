@@ -8,11 +8,18 @@ import { useDispatch, useSelector } from "react-redux";
 import { resultsLoading, searchList, setSearch } from "../Store/food";
 import { useNavigation } from "@react-navigation/native";
 import { CustomeText } from "../Components/Text";
+import { useEffect } from "react";
 const ProductsPage = () => {
   let products = useSelector(searchList);
   let nav = useNavigation();
   let loading = useSelector(resultsLoading);
   let dispatch = useDispatch();
+  useEffect(()=>{
+    
+    nav.addListener("beforeRemove",(e)=>{
+      dispatch(setSearch(""));
+    })
+  },[])
   return (
     <Animated.View
       entering={FadeInUp.springify().delay(500).damping(100).stiffness(100)}
@@ -22,7 +29,8 @@ const ProductsPage = () => {
       <View style={style.header}>
         <Pressable
           onPress={() => {
-            dispatch(setSearch(""));
+          
+
             nav.goBack();
           }}
           style={{

@@ -15,7 +15,9 @@ import Animated, {
   LinearTransition,
 } from "react-native-reanimated";
 import { useNavigation } from "@react-navigation/native";
+import { FadeIn } from "react-native-reanimated/src";
 const width_ =( Dimensions.get("screen").width/2)-50
+const FadeInImg_ = FadeIn.springify().damping(100).stiffness(10);
 const layOutCnahe = LinearTransition.springify().damping(400).stiffness(100);
 const FadeOutUp_ = FadeOutUp.springify()
   .duration(12)
@@ -46,7 +48,7 @@ const ProductCard = ({ item }) => {
           <Text style={style.ratingText}>{item.rating}</Text>
         </View>
         <View>
-          <Image source={{ uri: item.strMealThumb }} style={style.image} />
+          <Animated.Image entering={FadeInImg_} source={{ uri: item.strMealThumb }} style={style.image} />
         </View>
         <LinearGradient
           // Button Linear Gradient

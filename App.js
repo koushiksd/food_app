@@ -42,8 +42,12 @@ export default function App() {
     <GestureHandlerRootView>
       <Provider store={store}>
         <SafeAreaView style={styles.container}>
-          <NavigationContainer>
-            <Stack.Navigator>
+          <NavigationContainer theme={{
+            colors:{
+              background:'#ffffff'
+            }
+          }}>
+            <Stack.Navigator> 
               <Stack.Screen
                 options={{
                   title: "Loading",
@@ -58,8 +62,10 @@ export default function App() {
                   title: "Home",
                   headerShown: false,
                   presentation: "card",
+                  headerLeft:()=>null
                 }}
                 name="home"
+                
                 component={HomePage}
               />
               <Stack.Screen
@@ -75,7 +81,7 @@ export default function App() {
                 options={{
                   title: "Product Details",
                   headerShown: false,
-                  presentation:'transparentModal'
+                
                 }}
                 name="productsdetails"
                 component={ProductDetails}
